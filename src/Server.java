@@ -1,9 +1,10 @@
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Server {
 	public static void main(String[] args) {
@@ -15,6 +16,13 @@ public class Server {
 			Socket socket=serverSocket.accept();
 			System.out.println("Connessione avvenuta");
 			System.out.println("Socket: " +socket);
+			//creazione stream di output ed invio di un messaggio
+			DataOutputStream outToServer = new DataOutputStream(socket.getOutputStream());
+			outToServer.writeBytes("Ciao");
+			
+			BufferedReader inFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			String in = inFromClient.toString();
+			
 		} catch(BindException e) {
 			System.err.println("porta occupata");
 			e.printStackTrace();
