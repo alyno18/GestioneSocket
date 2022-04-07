@@ -1,10 +1,13 @@
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Server {
 	public static void main(String[] args) {
@@ -17,12 +20,18 @@ public class Server {
 			System.out.println("Connessione avvenuta");
 			System.out.println("Socket: " +socket);
 			//creazione stream di output ed invio di un messaggio
-			DataOutputStream outToServer = new DataOutputStream(socket.getOutputStream());
-			outToServer.writeBytes("Ciao");
+			DataOutputStream outToClient = new DataOutputStream(socket.getOutputStream());
+			outToClient.writeBytes("Ciao");
 			
-			BufferedReader inFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			DataInputStream inFromClient = new DataInputStream(socket.getInputStream());
 			String in = inFromClient.toString();
+			if(in.equals("orario")) {
+				SimpleDateFormat date = new SimpleDateFormat("yyyy.MM.dd.HH:mm:ss");
+		        String timeStamp = date.format(new Date());
+		        outToClient.writeBytes(timeStamp);
+			}
 			
+			serverSocket.close();
 		} catch(BindException e) {
 			System.err.println("porta occupata");
 			e.printStackTrace();
